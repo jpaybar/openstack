@@ -4,8 +4,6 @@
 
 st4rt.fr0m.scr4tch@gmail.com
 
-
-
 This Vagrantfile boots an Ubuntu 20.04 virtual machine and prepares the environment for Devstack installation using an Ansible playbook running as a local provisioner.
 
 The Vagrant box starts a virtual machine that uses VirtualBox as a provider. The machine must be partitioned with LVM volumes and not "traditional" partitioning.
@@ -64,17 +62,15 @@ We start the installation of Devstack:
 
 When the installation finishes, we will see something similar to this screen:
 
-![a](C:\LABO\vagrant\OPENSTACK\Desvstack_Vagrant_Ansible\Devstack_setup_OK.PNG)
+![Devstack_setup_OK.PNG](C:\Users\adm_payanjuanm\Downloads\Desvstack_Vagrant_Ansible\Devstack_setup_OK.PNG)
 
 The Horizon login window will be accessible through http://localhost:8888
 
-![a](C:\LABO\vagrant\OPENSTACK\Desvstack_Vagrant_Ansible\Horizon_screen.PNG)
+
+
+![Horizon_screen.PNG](C:\Users\adm_payanjuanm\Downloads\Desvstack_Vagrant_Ansible\Horizon_screen.PNG)
 
 User/passwd    "demo/openstack" or "admin/openstack"
-
-
-
-
 
 ##### Launch an instance through the Openstack CLI
 
