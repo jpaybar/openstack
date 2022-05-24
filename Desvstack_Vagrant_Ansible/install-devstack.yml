@@ -1,0 +1,90 @@
+##############################################################################################
+# Prepare the environment to install Openstack Victoria on Ubuntu 20.04 in its stable version 
+# with DevStack.
+##############################################################################################
+
+---
+- name: Install prerequisites
+  hosts: all
+  become: true
+  vars:
+    nic: enp0s8
+  tasks:
+    - name: Add the 'stack' user for devstack setup
+      user:
+        name: stack
+        comment: DevStack user
+        shell: /bin/bash
+        home: /opt/stack
+
+    - name: Add user 'stack' to sudoers
+      template:
+        src: "files/stack.j2"
+        dest: "/etc/sudoers.d/stack"
+       
+    - name: Add official Ubuntu 20.04 repositories
+      template:
+        src: "files/sources.list.j2"
+        dest: "/etc/apt/sources.list"
+       
+    - name: Apt-get update and dist-upgrade 
+      apt: update_cache=yes upgrade=dist
+       
+    - name: Install "Aptitude", "iptables", "arptables", "ebtables" and "acl" if they aren't 
+      apt: name={{ item }} state=latest force_apt_get=yes
+      loop: [ 'aptitude', 'iptables', 'arptables', 'ebtables', 'acl' ]
+      
+    - name: Set "iptables", "arptables", "ebtables" as legacy version
+      command: "{{ item }}"
+      loop:
+        - "update-alternatives --set iptables /usr/sbin/iptables-legacy"
+        - "update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy" 
+        - "update-alternatives --set arptables /usr/sbin/arptables-legacy"
+        - "update-alternatives --set ebtables /usr/sbin/ebtables-legacy"
+        
+    - name: Add a clean "/etc/hosts" file
+      template:
+        src: "files/hosts.j2"
+        dest: "/etc/hosts"
+       
+##############################################################################################
+# In order to access the "Floating IP" of an "Instance" from a machine on the LAN other than 
+# the "Devstack host", port forwarding is required.
+# net.ipv4.ip_forward = 1 ()
+##############################################################################################       
+       
+    - name: Add a line to "/etc/sysctl.conf" to activate Proxy ARP
+      lineinfile:
+        path: /etc/sysctl.conf
+        line: net.ipv4.conf.{{ nic }}.proxy_arp = 1
+        create: yes
+        
+    - name: Apply changes to "/etc/sysctl.conf" and add rule to "iptables"
+      command: "{{ item }}"
+      loop:
+        - "sysctl -p"
+        - "iptables -t nat -A POSTROUTING -o {{ nic }} -j MASQUERADE"
+        
+##############################################################################################        
+
+- name: Pre-setup DevStack as 'stack' user
+  hosts: all
+  become: true
+  become_user: stack
+  vars:
+    version: victoria
+  tasks:
+    - name: Clone devstack repository
+      git:
+        repo: https://opendev.org/openstack/devstack
+        dest: /opt/stack/devstack
+        version: stable/{{ version }}
+        
+    - name: Copy the response file "local.conf" needed to perform the installation
+      template:
+       src: "files/local.conf.j2"
+       dest: "/opt/stack/devstack/local.conf"
+
+    
+
+    

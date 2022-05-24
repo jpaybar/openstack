@@ -1,0 +1,49 @@
+﻿# -*- mode: ruby -*-
+
+# vi: set ft=ruby :
+
+boxes = [
+    {
+        :name => "devstack",
+        :eth1 => "192.168.56.15",
+        :mem => "8192",
+        :cpu => "4",
+		:box => "openstack_victoria_ubuntu2004_presetup",
+		:sshport => "22100",
+		:horizon => "8888",
+		:novnc_console => "6080",
+		:group => "/openstack"
+    }
+]
+
+Vagrant.configure(2) do |config|
+	if Vagrant.has_plugin?("vagrant-proxyconf")
+		config.proxy.http     = "http://10.40.56.3:8080"
+		config.proxy.https    = "http://10.40.56.3:8080"
+		config.proxy.no_proxy = "localhost,127.0.0.1,192.168.56.0/24,192.168.56.224/27"
+    end
+	boxes.each do |opts|
+		config.ssh.insert_key = false
+		config.vm.define opts[:name] do |subconfig|
+			subconfig.vm.box = opts[:box]
+			subconfig.vm.hostname = opts[:name]
+			subconfig.vm.network "private_network", ip: opts[:eth1]
+			subconfig.vm.network "forwarded_port", guest: 22, host: opts[:sshport], id: "ssh"
+			subconfig.vm.network "forwarded_port", guest: 80, host: opts[:horizon], id: "horizon"
+			subconfig.vm.network "forwarded_port", guest: 6080, host: opts[:novnc_console], id: "novnc_console"
+			subconfig.vm.provider "virtualbox" do |vb|
+				vb.customize ["modifyvm", :id, "--name", opts[:name]]
+				vb.customize ["modifyvm", :id, "--memory", opts[:mem]]
+				vb.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+				vb.customize ["modifyvm", :id, "--groups", opts[:group]]
+			end
+			subconfig.vm.post_up_message = "MÁQUINA VIRTUAL OK"
+		end
+	end
+	config.vm.provision "ansible_local" do |ansible|
+		ansible.playbook = "install-devstack.yml"
+    end
+end
+
+
+
