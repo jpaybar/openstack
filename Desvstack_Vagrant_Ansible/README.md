@@ -62,7 +62,7 @@ We start the installation of Devstack:
 
 When the installation finishes, we will see something similar to this screen:
 
-![Devstack_setup_OK.PNG](C:\Users\adm_payanjuanm\Downloads\Desvstack_Vagrant_Ansible\Devstack_setup_OK.PNG)
+![Devstack_setup_OK.PNG](https://github.com/jpaybar/OpenStack/blob/main/Desvstack_Vagrant_Ansible/Devstack_setup_OK.PNG)
 
 The Horizon login window will be accessible through http://localhost:8888
 
