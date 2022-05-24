@@ -205,7 +205,7 @@ Connect to the instance by SSH from Devstack Host
 ssh -i ./miclaveopenstack.pem cirros@192.168.56.237
 ```
 
-##`We also could connect via SSH to the instance from any physical or virtual machine that is in the network range 192.168.56.0/24.`
+## `We also could connect via SSH to the instance from any physical or virtual machine that is in the network range 192.168.56.0/24.`
 
 Another way to access the instance will be through the VNC console
 
