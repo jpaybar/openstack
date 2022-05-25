@@ -44,7 +44,7 @@ Once the virtual machine has booted, log in via ssh:
 vagrant ssh
 ```
 
-We change to the user "stack"
+Change to the user "stack"
 
 ```bash
 sudo su -l stack
@@ -54,7 +54,7 @@ sudo su -l stack
 cd devstack
 ```
 
-We start the installation of Devstack:
+Start the installation of Devstack:
 
 ```bash
 ./stack.sh
