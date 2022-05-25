@@ -54,7 +54,7 @@ sudo su -l stack
 cd devstack
 ```
 
-Start the installation of Devstack:
+Start Devstack setup:
 
 ```bash
 ./stack.sh
