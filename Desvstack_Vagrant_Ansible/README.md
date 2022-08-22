@@ -31,7 +31,7 @@ git clone https://github.com/jpaybar/OpenStack.git
 ```
 
 ```bash
-cd Desvstack_Vagrant_Ansible
+cd OpenStack/Desvstack_Vagrant_Ansible/
 ```
 
 ```bash
