@@ -213,7 +213,7 @@ openstack image list
 ```
 
 ```bash
-openstack image list | grep -F cirros | cut -f3 -d ‘|’
+openstack image list | grep -F cirros | cut -f3 -d '|'
 ```
 
 ##### Listar instancias / servidores
