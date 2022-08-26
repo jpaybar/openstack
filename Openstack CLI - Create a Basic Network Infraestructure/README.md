@@ -10,7 +10,7 @@ We will assign a floating IP to the `server1` instance, which we can access exte
 
 ##### Initial Openstack Network Structure
 
-![Topologia_red_default.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure\images\Topologia_red_default.PNG)
+![Topologia_red_default.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure/images/Topologia_red_default.PNG)
 
 ##### Create Networks
 
