@@ -156,7 +156,7 @@ SSH connection:
 
 To create the network infrastructure in an easier way, we can run this simple script that will create all the objects automatically.
 
-[Create_Openstack_Network_Infraestructure.sh](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure/images/ssh_connection.PNG)
+[Create_Openstack_Network_Infraestructure.sh](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure/Create_Openstack_Network_Infraestructure.sh)
 
 Author Information
 ------------------
