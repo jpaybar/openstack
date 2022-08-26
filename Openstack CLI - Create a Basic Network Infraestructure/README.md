@@ -142,7 +142,7 @@ openstack router add route --route destination=192.168.1.0/24,gateway=192.168.2.
 
 ##### Final Openstack Network Structure
 
-![Topologia_red.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure\images\Topologia_red.PNG)
+![Topologia_red.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure/images/Topologia_red.PNG)
 
 ### Testing the environment
 
