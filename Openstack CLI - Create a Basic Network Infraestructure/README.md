@@ -152,7 +152,7 @@ Connecting to the Floating IP on `server1` instance and doing ping to the others
 
 SSH connection:
 
-![ssh_connection.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure\images\ssh_connection.PNG)
+![ssh_connection.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure/images/ssh_connection.PNG)
 
 To create the network infrastructure in an easier way, we can run this simple script that will create all the objects automatically.
 
