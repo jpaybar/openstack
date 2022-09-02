@@ -8,7 +8,7 @@ This Vagrantfile boots an Ubuntu 20.04 virtual machine and prepares the environm
 
 The Vagrant box starts a virtual machine that uses VirtualBox as a provider. The machine must be partitioned with LVM volumes and not "traditional" partitioning.
 
-You may download the image from my drive:
+You can download the Ubuntu 20.04 image .box file with LVM partition from here:
 https://drive.google.com/file/d/1zcNJeX3MdkWUMYY8UwDHwbNvoiFBcGwd/view?usp=sharing
 
 ##### Environment:
