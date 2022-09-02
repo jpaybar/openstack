@@ -23,7 +23,7 @@ openstack security group rule create --proto tcp --dst-port 80 default
 openstack security group rule list
 ```
 
-![list_rules.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\list_rules.PNG)
+![list_rules.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/list_rules.PNG)
 
 ##### Create a key pair and assign the right permissions
 
@@ -32,7 +32,7 @@ openstack keypair create myprivatekey > myprivatekey.pem
 chmod 600 myprivatekey.pem
 ```
 
-![list_keypair.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\list_keypair.PNG)
+![list_keypair.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/list_keypair.PNG)
 
 ##### Create 2 Floating IP's for each server
 
@@ -40,7 +40,7 @@ chmod 600 myprivatekey.pem
 openstack floating ip create public
 ```
 
-![list_floatingIP.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\list_floatingIP.PNG)
+![list_floatingIP.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/list_floatingIP.PNG)
 
 ##### Create 2 instances connected to "private" subnet
 
@@ -68,8 +68,7 @@ openstack server add floating ip server1 192.168.56.241
 openstack server add floating ip server2 192.168.56.254
 ```
 
-<img title="" src="file:///C:/LABO/vagrant/OPENSTACK/Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's/images/list_servers.PNG" alt="list_servers.PNG" width="669">
-
+![list_servers.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/list_servers.PNG)
 ### 
 
 ### Create volumes:
@@ -83,7 +82,7 @@ openstack volume create volume1 --size 1
 openstack volume create volume2 --size 2
 ```
 
-![list_volumes.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\list_volumes.PNG)
+![list_volumes.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/list_volumes.PNG)
 
 ##### Attach `volume1` to `server1` instance
 
@@ -124,7 +123,7 @@ w (save partition)
 mkfs.ext4 /dev/vdb1
 ```
 
-![list_dev_vdb1.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\list_dev_vdb1.PNG)
+![list_dev_vdb1.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/list_dev_vdb1.PNG)
 
 ##### Create `/volume1` and mount `/dev/vdb1`
 
@@ -133,19 +132,19 @@ mkdir /volume1
 mount /dev/vdb1 /volume1
 ```
 
-![mount_volum1.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\mount_volum1.PNG)
+![mount_volum1.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/mount_volum1.PNG)
 
 ##### Create `file1.txt` and `folder1`
 
 We create `file1.txt` and `folder1` in `volume1` that is associated to `server1`, later we will disassociate `volume1` and associate it to the `server2` instance.
 
-![umount_volum1.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\umount_volum1.PNG)
+![umount_volum1.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/umount_volum1.PNG)
 
-![attach_volum1_on_server2.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\attach_volum1_on_server2.PNG)
+![attach_volum1_on_server2.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/attach_volum1_on_server2.PNG)
 
 ##### Mount `volume1` "/dev/vdc1" to `/mnt` directory on `server2`
 
-![mount_volum1_on_server2.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\mount_volum1_on_server2.PNG)
+![mount_volum1_on_server2.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/mount_volum1_on_server2.PNG)
 
 ##### Create a snapshot called `snapshot_volume1` of `volume1` and attach it to `server1`
 
@@ -153,7 +152,7 @@ We create `file1.txt` and `folder1` in `volume1` that is associated to `server1`
 openstack volume snapshot create --volume volume1 --force snapshot_volume1
 ```
 
-![create_snapshot_volume1.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Basic%20volume%20management,%20Containers,%20Objects%20and%20ACL's\images\create_snapshot_volume1.PNG)
+![create_snapshot_volume1.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Basic%20volume%20management/images/create_snapshot_volume1.PNG)
 
 Remove `volume1` from `server2`:
 
