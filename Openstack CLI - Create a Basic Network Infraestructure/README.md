@@ -169,13 +169,13 @@ from the following files on `"/etc/neutron/plugins/ml2/"`:
 `ml2_conf.ini`
 ```bash
 [ml2_type_flat]
-flat_networks = provider
+flat_networks = public
 ```
 
 `linuxbridge_agent.ini`
 ```bash
 [linux_bridge]
-physical_interface_mappings = provider:eth1
+physical_interface_mappings = public:eth1
 ```
 
 ### DELETE `public` NETWORK
