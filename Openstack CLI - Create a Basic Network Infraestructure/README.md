@@ -162,7 +162,7 @@ To create the network infrastructure in an easier way, we can run this simple sc
 
 ### HOW TO CREATE AN INITIAL BASIC NETWORK INFRASTRUCTURE (PUBLIC/PRIVATE NETWORK)
 
-The `--provider-physical-network "provider"` and `--provider-network-type flat` options connect the flat virtual 
+The `--provider-physical-network "provider"` and `--provider-network-type "flat"` options connect the flat virtual 
 network to the flat (native/untagged) physical network on the eth1 interface on the host using information 
 from the following files on "/etc/neutron/plugins/ml2/":
 
@@ -197,6 +197,23 @@ openstack subnet create --network public \
   --allocation-pool start=192.168.56.226,end=192.168.56.254 \
   --dns-nameserver 1.1.1.1 --gateway 192.168.56.225 \
   --subnet-range 192.168.56.224/27 public-subnet
+```
+
+### CREATE `private` NETWORK AND SUBNETWORK FOR PROJECT `demo`
+
+```bash
+source demo_openrc.sh
+openstack network create private
+openstack subnet create --network private --subnet-range 10.0.0.0/26 private-subnet
+```
+
+### CREATE A ROUTER CALLED `Router1` 
+We create the router "router1" and set the gateway to the "public" network, then add the subnet "private-subnet" to that router.
+
+```bash
+openstack router create router1
+openstack router set router1 --external-gateway public
+openstack router add subnet router1 private-subnet
 ```
 
 Author Information
