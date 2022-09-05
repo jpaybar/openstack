@@ -164,7 +164,7 @@ To create the network infrastructure in an easier way, we can run this simple sc
 
 The `--provider-physical-network "provider"` and `--provider-network-type "flat"` options connect the flat virtual 
 network to the flat (native/untagged) physical network on the eth1 interface on the host using information 
-from the following files on "/etc/neutron/plugins/ml2/":
+from the following files on `"/etc/neutron/plugins/ml2/"`:
 
 `ml2_conf.ini`
 ```bash
