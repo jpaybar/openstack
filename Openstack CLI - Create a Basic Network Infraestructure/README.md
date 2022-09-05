@@ -162,7 +162,7 @@ To create the network infrastructure in an easier way, we can run this simple sc
 
 ### HOW TO CREATE AN INITIAL BASIC NETWORK INFRASTRUCTURE (PUBLIC/PRIVATE NETWORK)
 
-The --provider-physical-network provider and --provider-network-type flat options connect the flat virtual 
+The `--provider-physical-network "provider"` and `--provider-network-type flat` options connect the flat virtual 
 network to the flat (native/untagged) physical network on the eth1 interface on the host using information 
 from the following files on "/etc/neutron/plugins/ml2/":
 
@@ -172,13 +172,31 @@ from the following files on "/etc/neutron/plugins/ml2/":
 flat_networks = provider
 ```
 
-linuxbridge_agent.ini
+`linuxbridge_agent.ini`
 ```bash
 [linux_bridge]
 physical_interface_mappings = provider:eth1
 ```
+
+### DELETE `public` NETWORK
+
 ```bash
-openstack catalog list
+source admin_openrc.sh
+openstack network delete public
+```
+
+### CREATE `public` NETWORK AND SUBNETWORK
+
+```bash
+openstack network create  --external \
+  --provider-physical-network public \
+  --provider-network-type flat public
+```
+```bash
+openstack subnet create --network public \
+  --allocation-pool start=192.168.56.226,end=192.168.56.254 \
+  --dns-nameserver 1.1.1.1 --gateway 192.168.56.225 \
+  --subnet-range 192.168.56.224/27 public-subnet
 ```
 
 Author Information
