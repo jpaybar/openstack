@@ -158,6 +158,29 @@ To create the network infrastructure in an easier way, we can run this simple sc
 
 [Create_Openstack_Network_Infraestructure.sh](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Basic%20Network%20Infraestructure/Create_Openstack_Network_Infraestructure.sh)
 
+
+
+### HOW TO CREATE AN INITIAL BASIC NETWORK INFRASTRUCTURE (PUBLIC/PRIVATE NETWORK)
+
+The --provider-physical-network provider and --provider-network-type flat options connect the flat virtual 
+network to the flat (native/untagged) physical network on the eth1 interface on the host using information 
+from the following files on "/etc/neutron/plugins/ml2/":
+
+`ml2_conf.ini`
+```bash
+[ml2_type_flat]
+flat_networks = provider
+```
+
+linuxbridge_agent.ini
+```bash
+[linux_bridge]
+physical_interface_mappings = provider:eth1
+```
+```bash
+openstack catalog list
+```
+
 Author Information
 ------------------
 
