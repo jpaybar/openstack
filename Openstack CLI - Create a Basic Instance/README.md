@@ -307,6 +307,13 @@ wget https://download.opensuse.org/distribution/leap/15.4/appliances/openSUSE-Le
 openstack image create --public --container-format=bare --disk-format=qcow2 \
  --file openSUSE-Leap-15.4-JeOS.x86_64-OpenStack-Cloud.qcow2 "OpenSUSE_15.4"
 ```
+### CREAR NUESTRO PROPIO `flavor`
+
+```bash
+source admin_openrc.sh
+openstack flavor create myflavor --id 0 \
+    --ram 1024 --disk 1 --vcpus 2
+```
 
 ### LISTAR CATALOGO DE SERVICIOS
 
