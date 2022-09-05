@@ -297,7 +297,7 @@ openstack console url show vm_prueba1
 ```
 https://docs.openstack.org/image-guide/obtain-images.html
 ```
-### DESCARGAR IMAGEN DE OpenSUSE 15.4 Y CREARLA EN EL NODO DE CONTROL
+### DESCARGAR IMAGEN DE `OpenSUSE 15.4` Y CREARLA EN EL NODO DE CONTROL
 
 ```bash
 source admin_openrc.sh
