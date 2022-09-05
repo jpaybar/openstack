@@ -4,7 +4,7 @@
 
 ### CONFIGURACIÓN DE LAS VARIABLES DE ENTORNO PARA LOS USUARIOS "admin" y "demo".
 
-Cambiamos al usuario "stack" creado en la instalación de Devstack:
+Cambiamos al usuario "stack" creado en la instalación de Devstack (o al usuario que vayamos a usar en el nodo de control):
 
 ```bash
 sudo su -l stack
