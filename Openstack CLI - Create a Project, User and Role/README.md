@@ -15,7 +15,7 @@ openstack project list
 openstack user list
 ```
 
-![Project_user_list.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Project,%20User%20and%20Role\images\Project_user_list.PNG)
+![Project_user_list.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Project%2C%20User%20and%20Role/images/Project_user_list.PNG)
 
 The `admin` project is obviously used by the administrator, `service` is the one used by the OpenStack components and users of these services (Nova, Glance, Cinder, Neutron, etc.) and `demo` is a project created in this installation to make
 tests with a non-privileged user. To create a new project we will run these commands.
@@ -37,7 +37,7 @@ Let's see the list of roles available in Openstack:
 openstack role list
 ```
 
-![role_list.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Project,%20User%20and%20Role\images\role_list.PNG)
+![role_list.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Project%2C%20User%20and%20Role/images/role_list.PNG)
 
 ```bash
 openstack role add --project project1 --user project1 member
@@ -47,7 +47,7 @@ openstack role add --project project1 --user project1 member
 
 When the user `project1` logs in to `Horizon` within the project `project1` the only thing he will see in the Network Topology will be the "public" network. Each user must create the basic network scenario by adding the "private" network and its associated "private-subnet" subnet in addition to the router "router1" connected to the "public" network.
 
-![basic_network_topologhy.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Project,%20User%20and%20Role\images\basic_network_topologhy.PNG)
+![basic_network_topologhy.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Project%2C%20User%20and%20Role/images/basic_network_topologhy.PNG)
 
 ```bash
 source project1-openrc.sh
@@ -58,7 +58,7 @@ openstack router set router1 --external-gateway public
 openstack router add subnet router1 private-subnet
 ```
 
-![User_network.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Project,%20User%20and%20Role\images\User_network.PNG)
+![User_network.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Project%2C%20User%20and%20Role/images/User_network.PNG)
 
 ### Other related commands:
 
@@ -92,7 +92,7 @@ openstack hypervisor list
 openstack service list
 ```
 
-![Hypervisor_servicios.PNG](C:\LABO\vagrant\OPENSTACK\Openstack%20CLI%20-%20Create%20a%20Project,%20User%20and%20Role\images\Hypervisor_servicios.PNG)
+![Hypervisor_servicios.PNG](https://github.com/jpaybar/OpenStack/blob/main/Openstack%20CLI%20-%20Create%20a%20Project%2C%20User%20and%20Role/images/Hypervisor_servicios.PNG)
 
 Author Information
 ------------------
