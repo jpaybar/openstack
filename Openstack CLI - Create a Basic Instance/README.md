@@ -11,7 +11,7 @@ sudo su -l stack
 cd devstack
 ```
 
-Sino hemos establecido las variables de entorno con el comando `source openrc` al ejecutar cualquier comando nos devolverá el siguiente "Warning":
+Sino hemos establecido las variables de entorno con el comando `source openrc`, `source admin-openrc.sh`, `source demo-openrc.sh` al ejecutar cualquier comando nos devolverá el siguiente "Warning":
 
 ```
 "Missing value auth-url required for auth plugin password"
@@ -22,6 +22,7 @@ Al ejecutar el comando `source openrc` la salida será similar a la siguiente:
 ```
 "WARNING: setting legacy OS_TENANT_NAME to support cli tools."
 ```
+Si ejecutamos el fichero RC previamente descargado de Horizon ya sea `source admin-openrc.sh` o `source demo-openrc.sh`, se nos pedirá que ingresemos la contraseña de usuario para dicho proyecto.
 
 Ahora podremos ejecutar comandos desde la CLI, por ejemplo listar las imagenes disponibles:
 
