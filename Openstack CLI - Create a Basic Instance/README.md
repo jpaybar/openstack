@@ -22,7 +22,7 @@ Al ejecutar el comando `source openrc` (el path al script es /opt/stack/devstack
 ```
 "WARNING: setting legacy OS_TENANT_NAME to support cli tools."
 ```
-Si ejecutamos el fichero RC previamente descargado de Horizon ya sea `source admin-openrc.sh` o `source demo-openrc.sh`, se nos pedirá que ingresemos la contraseña de usuario para dicho proyecto.
+Si ejecutamos el fichero RC previamente descargado de `Horizon` ya sea `source admin-openrc.sh` o `source demo-openrc.sh`, se nos pedirá que ingresemos la contraseña de usuario para dicho proyecto, como se comenta más abajo.
 
 Ahora podremos ejecutar comandos desde la CLI, por ejemplo listar las imagenes disponibles:
 
@@ -77,16 +77,43 @@ Please enter your OpenStack Password for project demo as user demo:
 
 Introducimos la contraseña que configuramos en nuestro fichero de respuesta `local.conf` a la hora de la instalación y listo.
 
-##### Ejecutar el cliente Nova desde un equipo remoto
+##### Ejecutar el cliente Openstack desde un equipo remoto
 
-Para poder ejecutar commandos de Nova necesitamos instalar el cliente en nuestro equipo de control remoto. La instalación la podemos hacer desde repositorio según la distribución o con `pip`, de esta forma se instalará la última versión del cliente Nova.
+Para poder ejecutar commandos de Openstack necesitamos instalar el cliente en nuestro equipo de control remoto. La instalación la podemos hacer desde repositorio según la distribución o con `pip`, de esta forma se instalará la última versión del cliente Openstack o la que corresponda a nuestra versión (en este caso Openstack Victoria versión del cliente 5.4.0).
 
 ```bash
-sudo apt-get install python3-pip
+openstack --version
 ```
 
 ```bash
-sudo pip install python-novaclient
+sudo apt-get update
+```
+
+En este caso lo más conveniente es instalar el cliente Openstack desde un entorno virtual de Python con lo que no modificaremos nada de las versiones del sistema, para ello usaremos `virtualenv` y crearemos un directorio en el $HOME del usuario (/python/openstack) que posteriormente activaremos para la instalación.
+
+```bash
+sudo apt-get install python3-dev python3-pip python3-virtualenv
+```
+
+```bash
+mkdir ~/python/openstack
+```
+
+```bash
+virtualenv ~/python/openstack
+```
+
+```bash
+source python/openstack/bin/activate
+```
+
+Nuestro prompt cambiará a algo similar a lo siguiente (en el cual precede el nombre de nuestro entorno virutal de Python):
+```bash
+(openstack) vagrant@masterVM:~$
+```
+
+```bash
+pip3 install python-openstackclient==5.4.0
 ```
 
 Ya tendríamos instalado el cliente Nova, previamente deberiamos haber descargado el fichero RC. Una vez logado en la interfaz web de Horizon, hacemos click en "Acceso a la API" y después click en "Descargar fichero RC de OpenStack", de esta forma se descargará un script llamado `demo-openrc.sh` si nos hemos logado en el Proyecto `demo` o `admin-openrc.sh` en caso de logarnos como usuario "admin".
