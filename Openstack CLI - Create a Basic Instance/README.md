@@ -17,7 +17,7 @@ Sino hemos establecido las variables de entorno con el comando `source openrc`, 
 "Missing value auth-url required for auth plugin password"
 ```
 
-Al ejecutar el comando `source openrc` la salida será similar a la siguiente:
+Al ejecutar el comando `source openrc` (el path al script es /opt/stack/devstack) la salida será similar a la siguiente:
 
 ```
 "WARNING: setting legacy OS_TENANT_NAME to support cli tools."
