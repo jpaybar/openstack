@@ -41,7 +41,7 @@ openstack image list
 O listar los sabores:
 
 ```bash
-nova flavor-list
+openstack flavor list
 ```
 
 ```
@@ -112,11 +112,18 @@ Nuestro prompt cambiará a algo similar a lo siguiente (en el cual precede el no
 (openstack) vagrant@masterVM:~$
 ```
 
+Instalamos el cliente de Openstack en su versión 5.4.0:
+
 ```bash
 pip3 install python-openstackclient==5.4.0
 ```
+Para salir de nuestro entorno virtual de Python, sólo debemos ejecutar:
 
-Ya tendríamos instalado el cliente Nova, previamente deberiamos haber descargado el fichero RC. Una vez logado en la interfaz web de Horizon, hacemos click en "Acceso a la API" y después click en "Descargar fichero RC de OpenStack", de esta forma se descargará un script llamado `demo-openrc.sh` si nos hemos logado en el Proyecto `demo` o `admin-openrc.sh` en caso de logarnos como usuario "admin".
+```bash
+deactivate
+```
+
+Ya tendríamos instalado el cliente Openstack, descargamos el fichero RC. Una vez logado en la interfaz web de Horizon, hacemos click en "Acceso a la API" y después click en "Descargar fichero RC de OpenStack", de esta forma se descargará un script llamado `demo-openrc.sh` si nos hemos logado en el Proyecto `demo` o `admin-openrc.sh` en caso de logarnos como usuario "admin".
 
 Ejecutamos el fichero RC:
 
@@ -124,10 +131,10 @@ Ejecutamos el fichero RC:
 source demo-openrc.sh
 ```
 
-y probamos el funcionamiento del cliente Nova, por ejemplo listando los sabores:
+y probamos el funcionamiento del cliente Openstack, por ejemplo listamos los sabores disponibles:
 
 ```bash
-nova flavor-list
+openstack flavor list
 ```
 
 ### GESTIÓN DE CLAVES "PÚBLICA/PRIVADA"
