@@ -11,6 +11,11 @@ The Vagrant box starts a virtual machine that uses VirtualBox as a provider. The
 You can download the Ubuntu 20.04 image .box file with LVM partition from here:
 https://drive.google.com/file/d/1zcNJeX3MdkWUMYY8UwDHwbNvoiFBcGwd/view?usp=sharing
 
+Add this box locally running:
+```bash
+vagrant box add openstack_victoria_ubuntu2004_presetup /path/to/file/openstack_victoria_ubuntu2004_presetup.box
+```
+
 ##### Environment:
 
 - Host, Windows 10 (20H2 version) x64, Intel(R) Core(TM) i5 3.10GHz, 16GB RAM, 256GB SSD Disk
