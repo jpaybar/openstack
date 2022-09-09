@@ -80,10 +80,13 @@ User/passwd    "demo/openstack" or "admin/openstack"
 
 ##### Launch an instance through the Openstack CLI
 
-Run next command
+Run next command (depending on the project and the role with which you are going to work `demo` or `admin`)
 
 ```bash
-source openrc
+source admin-openrc.sh
+```
+```bash
+source demo-openrc.sh
 ```
 
 Create a keypair
