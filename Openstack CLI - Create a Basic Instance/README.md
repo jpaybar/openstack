@@ -192,12 +192,6 @@ Ahora si listamos de nuevo nuestras claves apareceran las 2
 openstack keypair list
 ```
 
-o 
-
-```bash
-nova keypair-list
-```
-
 ```
 +---------------------+------+-------------------------------------------------+
 | Name                | Type | Fingerprint                                     |
