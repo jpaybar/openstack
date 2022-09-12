@@ -169,7 +169,7 @@ openstack keypair list
 
 Si ya hemos generado un par de claves en nuestro computador Linux o Mac, lo más probable es que la llave pública se llame `id_rsa.pub` y esté ubicada en el directorio: `~/.ssh/`.
 
-Podemos importar nuestra clave pública al servidor de la siguiente forma:
+Podemos exportar nuestra clave pública al servidor de la siguiente forma:
 
 ```bash
 openstack keypair create --public-key \
