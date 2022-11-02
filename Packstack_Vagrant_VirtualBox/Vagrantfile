@@ -1,0 +1,72 @@
+# -*- mode: ruby -*-
+
+# vi: set ft=ruby :
+
+boxes = [
+    {
+        :name => "packstack-node1.domain.local", 
+        :eth1 => "192.168.56.15",
+        :mem => "8192",
+        :cpu => "4",
+		:box => "centos-7.8",
+		:sshport => "22200",
+		:horizon => "8888",
+		:novnc_console => "6080",
+		:group => "/packstack"
+    }
+]
+
+Vagrant.configure(2) do |config|
+
+	if Vagrant.has_plugin?("vagrant-proxyconf")
+		config.proxy.http     = "http://10.40.56.3:8080"
+		config.proxy.https    = "http://10.40.56.3:8080"
+		config.proxy.no_proxy = "localhost,127.0.0.1,192.168.56.0/24,10.0.0.0/24"
+    end
+	
+	if Vagrant.has_plugin?("vagrant-vbguest") then
+          config.vbguest.auto_update = false
+    end
+
+	config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+	
+	boxes.each do |opts|
+		config.ssh.insert_key = false
+		config.vm.define opts[:name] do |subconfig|
+			subconfig.vm.box = opts[:box]
+			subconfig.vm.hostname = opts[:name]
+			subconfig.vm.network "private_network", ip: opts[:eth1]
+			subconfig.vm.network "forwarded_port", guest: 22, host: opts[:sshport], id: "ssh"
+			subconfig.vm.network "forwarded_port", guest: 80, host: opts[:horizon], id: "horizon"
+			subconfig.vm.network "forwarded_port", guest: 6080, host: opts[:novnc_console], id: "novnc_console"
+			subconfig.vm.synced_folder ".", "/vagrant", type: "rsync", id: "Directorio de Packstack",
+				rsync__exclude: ".git/"
+			subconfig.vm.provider "virtualbox" do |vb|
+				vb.customize ["modifyvm", :id, "--name", opts[:name]]
+				vb.customize ["modifyvm", :id, "--memory", opts[:mem]]
+				vb.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+				vb.customize ["modifyvm", :id, "--groups", opts[:group]]
+				vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+			end
+			subconfig.vm.post_up_message = "MÁQUINA VIRTUAL OK"
+		end
+	end
+	config.disksize.size = '80GB'
+	config.vm.provision "shell", path: "provision_scripts/resize_hdd.sh"
+	config.vm.provision "shell", preserve_order: true, path: "provision_scripts/yum_update.sh"
+	config.vm.provision :reload
+	config.vm.provision "shell", preserve_order: true, path: "provision_scripts/disable_services.sh"
+	config.vm.provision :reload
+	config.vm.provision "shell", preserve_order: true, path: "provision_scripts/config_selinux.sh"
+	config.vm.provision :reload
+	config.vm.provision "shell", preserve_order: true, path: "provision_scripts/install_packstack_release.sh"
+	config.vm.provision :reload
+	config.vm.provision "shell", preserve_order: true, path: "provision_scripts/install_packstack.sh"
+	config.vm.provision :reload
+	config.vm.provision "shell", preserve_order: true, path: "provision_scripts/answer_file.sh"
+end
+
