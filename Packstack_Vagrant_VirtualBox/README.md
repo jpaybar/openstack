@@ -152,7 +152,7 @@ sudo packstack --answer-file=packstack-answers.txt
 
 When the installation finishes, we will see something similar to this screen:
 
-![Installation_OK.PNG](C:\LABO\vagrant\OPENSTACK\Packstack_Vagrant_VirtualBox\_images\Installation_OK.PNG)
+![Installation_OK.PNG](https://github.com/jpaybar/OpenStack/blob/main/Packstack_Vagrant_VirtualBox/_images/Installation_OK.PNG)
 
 As we can see, it shows us that we can access "Horizon" from the following url:
 
@@ -162,7 +162,7 @@ But in our Vagrantfile we have forwarded the 80 port of the Guest to 8888 of our
 
 The Horizon login window will be accessible through http://localhost:8888
 
-![Horizon_screen.PNG](C:\LABO\vagrant\OPENSTACK\Packstack_Vagrant_VirtualBox\_images\Horizon_screen.PNG)
+![Horizon_screen.PNG](https://github.com/jpaybar/OpenStack/blob/main/Packstack_Vagrant_VirtualBox/_images/Horizon_screen.PNG)
 
 User/passwd "admin/openstack"
 
@@ -205,7 +205,7 @@ cd /vagrant/network_setup_scripts/
 
 Once the script has finished executing we will have the following network structure with our Ubuntu 18.04 instance.
 
-![Basic_network.PNG](C:\LABO\vagrant\OPENSTACK\Packstack_Vagrant_VirtualBox\_images\Basic_network.PNG)
+![Basic_network.PNG](https://github.com/jpaybar/OpenStack/blob/main/Packstack_Vagrant_VirtualBox/_images/Basic_network.PNG)
 
 We also could connect via SSH to the instance from any physical or virtual machine that is in the network range 192.168.56.0/24.
 
