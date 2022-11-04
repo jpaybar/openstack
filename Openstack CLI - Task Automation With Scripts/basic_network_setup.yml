@@ -1,0 +1,152 @@
+---
+# REQUIRED: ansible-galaxy collection install openstack.cloud (Needed to create new Flavors)
+#
+# Run this command: "ansible-playbook basic_network_setup.yml"
+#
+# https://docs.ansible.com/ansible/2.9/modules/list_of_cloud_modules.html#openstack
+
+- name: Basic Network Setup Tasks
+  hosts: localhost
+  tasks:
+  
+  # https://docs.ansible.com/ansible/2.9/modules/os_network_module.html#os-network-module
+  - name: Create External Public Network
+    os_network:
+      state: present
+      name: extnet
+      external: True
+      shared: True
+      provider_network_type: flat
+      provider_physical_network: extnet
+    register: extnet_network
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_subnet_module.html#os-subnet-module  
+  - name: Create External Public Subnet
+    os_subnet:
+      state: present
+      network_name: "{{ extnet_network.id }}"
+      name: extnet-subnet
+      ip_version: 4
+      cidr: 192.168.56.0/24
+      gateway_ip: 192.168.56.1
+      #enable_dhcp: yes
+      dns_nameservers:
+        - 8.8.8.8
+        - 1.1.1.1
+      allocation_pool_start: 192.168.56.226
+      allocation_pool_end: 192.168.56.254
+    register: extnet_subnet
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_network_module.html#os-network-module
+  - name: Create Private Network
+    os_network:
+      state: present
+      name: private
+      external: False
+      shared: False
+      # provider_network_type: flat
+      # provider_physical_network: extnet
+    register: private_network
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_subnet_module.html#os-subnet-module  
+  - name: Create Private Subnet
+    os_subnet:
+      state: present
+      network_name: "{{ private_network.id }}"
+      name: private-subnet
+      ip_version: 4
+      cidr: 10.0.0.0/24
+      gateway_ip: 10.0.0.1
+      enable_dhcp: yes
+      dns_nameservers:
+        - 8.8.8.8
+        - 1.1.1.1
+    register: private_subnet
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_router_module.html#os-router-module  
+  - name: Create a Router called "router1" attached to extnet on a subnet "extnet-subnet" and one "private-subnet" interface
+    #ignore_errors: yes #for some reasons, re-running this task gives errors
+    os_router:
+      state: present
+      name: router1
+      network: extnet
+      external_fixed_ips:
+        - subnet: extnet-subnet
+      interfaces:
+        - private-subnet
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_keypair_module.html#os-keypair-module    
+  - name: Create a Keypair from current user's default SSH key
+    os_keypair:
+      state: present
+      name: ansible_root
+      public_key_file: "{{ '~' | expanduser }}/.ssh/id_rsa.pub"
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_security_group_rule_module.html#os-security-group-rule-module  
+  - name: Create an ICMP security rule for security group "default"
+    os_security_group_rule:
+      security_group: 51ce77e0-a0f4-4735-8342-ec3321cb610e
+      protocol: icmp
+      remote_ip_prefix: 0.0.0.0/0
+      
+  - name: Create a SSH security rule for security group "default"
+    os_security_group_rule:
+      security_group: 51ce77e0-a0f4-4735-8342-ec3321cb610e
+      protocol: tcp
+      port_range_min: 22
+      port_range_max: 22
+      remote_ip_prefix: 0.0.0.0/0
+      
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html
+  - name: Download Ubuntu 18.04 image
+    get_url:
+      url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+      dest: /tmp/bionic-server-cloudimg-amd64.img
+      
+  # https://docs.ansible.com/ansible/2.9/modules/os_image_module.html#os-image-module
+  - name: Upload and create image on Openstack
+    os_image:
+      name: Ubuntu_18.04
+      container_format: bare
+      disk_format: qcow2
+      state: present
+      filename: /tmp/bionic-server-cloudimg-amd64.img
+      
+  # https://docs.ansible.com/ansible/latest/collections/openstack/cloud/compute_flavor_module.html
+  # REQUIRED: ansible-galaxy collection install openstack.cloud
+  - name: Create our own flavor
+    openstack.cloud.compute_flavor:
+      state: present
+      name: MY.tiny
+      ram: 1024
+      vcpus: 1
+      disk: 5
+      flavorid: 1a
+      
+  # https://docs.ansible.com/ansible/2.9/modules/os_server_module.html#os-server-module
+  - name: Create an Instance
+    ignore_errors: yes #When re-running this task gives errors about duplicate item in security group 
+    os_server:
+      state: present
+      name: Ubuntu_18.04_VM
+      image: Ubuntu_18.04
+      flavor: MY.tiny
+      security_groups: 51ce77e0-a0f4-4735-8342-ec3321cb610e
+      key_name: ansible_root
+      nics:
+        - net-id: "{{ private_network.id }}"
+      auto_floating_ip: yes
+    # register: Ubuntu_18.04_VM
+    
+  # https://docs.ansible.com/ansible/2.9/modules/os_server_info_module.html#os-server-info-module
+  - name: Gather information about the instance
+    os_server_info:
+      server: Ubuntu_18.04_VM
+      # filters:
+        # vm_state: active
+    register: Ubuntu_1804_VM
+  
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html
+  - name: Show instance's info
+    debug:
+      msg: "{{ Ubuntu_1804_VM.openstack_servers }}"
