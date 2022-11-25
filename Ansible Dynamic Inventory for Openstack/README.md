@@ -205,9 +205,10 @@ En el siguiente ejemplo, usamos `jq` para eliminar los datos asociados con la cl
 ansible-inventory -i openstack.yml --list | jq -r '. | del(._meta)'
 ```
 
-Author Information
-Juan Manuel Payán Barea    (IT Technician) st4rt.fr0m.scr4tch@gmail.com
+## Author Information
 
-jpaybar (Juan M. Payán Barea) · GitHub
+Juan Manuel Payán Barea    (IT Technician) [st4rt.fr0m.scr4tch@gmail.com](mailto:st4rt.fr0m.scr4tch@gmail.com)
+
+[jpaybar (Juan M. Payán Barea) · GitHub](https://github.com/jpaybar)
 
 https://es.linkedin.com/in/juanmanuelpayan
