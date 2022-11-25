@@ -1,5 +1,8 @@
 ## Inventarios Dinámicos de Ansible para Openstack (plugin)
 
+By Juan Manuel Payán / jpaybar
+st4rt.fr0m.scr4tch@gmail.com
+
 Ansible admite dos formas de conectarse con el inventario externo: `plugins` y `scripts`. Ansible recomienda el uso de `plugins` en vez de `scripts`.
 
 [openstack.cloud.openstack inventory – OpenStack inventory source — Ansible Documentation](https://docs.ansible.com/ansible/latest/collections/openstack/cloud/openstack_inventory.html)
@@ -198,3 +201,10 @@ En el siguiente ejemplo, usamos `jq` para eliminar los datos asociados con la cl
 ```bash
 ansible-inventory -i openstack.yml --list | jq -r '. | del(._meta)'
 ```
+
+Author Information
+Juan Manuel Payán Barea    (IT Technician) st4rt.fr0m.scr4tch@gmail.com
+
+jpaybar (Juan M. Payán Barea) · GitHub
+
+https://es.linkedin.com/in/juanmanuelpayan
