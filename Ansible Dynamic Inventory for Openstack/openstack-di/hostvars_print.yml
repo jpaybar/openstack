@@ -1,0 +1,15 @@
+###################################################################################
+#
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_vars_facts.html
+#
+###################################################################################
+---
+- name: Print Hostvars to get info
+  hosts: all
+  gather_facts: false
+  vars:
+    msg: '{{ hostvars[inventory_hostname] }}'
+
+  tasks:
+    - name: Print Vars Info
+      debug: var=msg

@@ -1,0 +1,14 @@
+################################################################################################
+#
+# https://docs.ansible.com/ansible/latest/collections/openstack/cloud/openstack_inventory.html
+#
+################################################################################################
+# file must be named openstack.yaml or openstack.yml
+# Make the plugin behave like the default behavior of the old script
+################################################################################################
+plugin: openstack.cloud.openstack
+expand_hostvars: true
+use_hostnames: True
+fail_on_errors: true
+clouds_yaml_path:
+  - ./clouds.yaml

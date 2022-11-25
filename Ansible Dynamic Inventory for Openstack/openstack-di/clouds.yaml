@@ -1,0 +1,15 @@
+#############################################################
+# From /etc/openstack/clouds.yaml
+#############################################################
+clouds:
+  devstack:
+    auth:
+      auth_url: http://192.168.56.15/identity
+      password: openstack
+      project_domain_id: default
+      project_name: demo
+      user_domain_id: default
+      username: demo
+    identity_api_version: '3'
+    region_name: RegionOne
+    volume_api_version: '3'
