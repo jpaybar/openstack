@@ -4,6 +4,8 @@ By Juan Manuel Payán / jpaybar
 
 st4rt.fr0m.scr4tch@gmail.com
 
+### Info
+
 Ansible admite dos formas de conectarse con el inventario externo: `plugins` y `scripts`. Ansible recomienda el uso de `plugins` en vez de `scripts`.
 
 [openstack.cloud.openstack inventory – OpenStack inventory source — Ansible Documentation](https://docs.ansible.com/ansible/latest/collections/openstack/cloud/openstack_inventory.html)
