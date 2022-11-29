@@ -1,0 +1,108 @@
+---
+#########################################################################################################################
+# Playbook 1 - Deploy N Instances Automatically in OpenStack
+#########################################################################################################################
+
+- name: Deploy N Instances Automatically in OpenStack
+  hosts: localhost
+  vars:
+    image: "Ubuntu 20.04"
+    instance_name_vm: "Ubuntu_20.04_VM"
+    network: "private"
+    key_name: "miclaveopenstack"
+    flavor: "ds1G"
+    security_groups: "default"
+    count: 2
+
+  tasks:
+
+    # https://docs.ansible.com/ansible/2.9/modules/os_server_module.html
+    - name: Deploy instances
+      os_server:
+        # From /etc/openstack/clouds.yaml
+        auth:
+          auth_url: http://192.168.56.15/identity
+          password: openstack
+          project_domain_id: default
+          project_name: demo
+          user_domain_id: default
+          username: demo
+        state: present
+        name: "{{ instance_name_vm }}{{ item }}"
+        flavor: "{{ flavor }}"
+        image: "{{ image }}"
+        key_name: "{{ key_name }}"
+        wait: true
+        network: "{{ network }}"
+        security_groups: "{{ security_groups }}"
+        auto_ip: true
+      loop: "{{ range(1, count + 1) | list }}"
+      register: new_instances
+      
+    #- debug: var=new_instances  
+
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/add_host_module.html
+    - name: Create in-memory Ansible inventory
+      add_host:
+        name: "{{ item.server.public_v4 }}"
+        groups: ubuntu_group
+        ansible_user: ubuntu
+        instance_name: "{{ item.server.name }}"
+      loop: "{{ new_instances.results }}"
+      
+#########################################################################################################################
+# Playbook 2 - Configure Instances from in-memory inventory
+#########################################################################################################################
+
+- name: Provision the instances
+  hosts: ubuntu_group
+  become: true
+  gather_facts: false
+  vars:
+     ansible_ssh_private_key_file: ./miclaveopenstack.pem
+
+  tasks:
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_connection_module.html
+    - name: Wait for SSH service to become available
+      wait_for_connection:
+        delay: 5
+        timeout: 300
+        
+    - name: Add nameserver to /etc/resolv.conf
+      lineinfile:
+        path: /etc/resolv.conf
+        line: nameserver 8.8.8.8
+        
+    - name: Add proxy server to /etc/environment
+      lineinfile:
+        path: /etc/environment
+        line: "{{ item.line }}"
+      loop:
+        - { line: 'export http_proxy="http://10.40.56.3:8080"' }
+        - { line: 'export https_proxy="http://10.40.56.3:8080"' }
+
+    - name: Install packages
+      apt:
+        state: present
+        name: ["net-tools", "powertop"]
+        update_cache: true
+
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/pause_module.html
+    - name: Continue working with the instances or tear down them
+      pause:
+        prompt: "Playbook paused... press <enter> to tear down the instances or <ctrl-c> to Continue the Playbook and hit 'A' to save Instances"
+      
+#########################################################################################################################
+# Play 3 - Tear down Instances
+#########################################################################################################################
+- name: Tear down Instances
+  hosts: localhost
+
+  tasks:
+    # https://docs.ansible.com/ansible/2.9/modules/os_server_module.html
+    - name: Tear down instances
+      os_server:
+        state: absent
+        name: "{{ item.server.name }}"
+      loop: "{{ new_instances.results }}"
+      
