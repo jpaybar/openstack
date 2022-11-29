@@ -78,8 +78,8 @@
         path: /etc/environment
         line: "{{ item.line }}"
       loop:
-        - { line: 'export http_proxy="http://10.40.56.3:8080"' }
-        - { line: 'export https_proxy="http://10.40.56.3:8080"' }
+        - { line: 'export http_proxy="http://your.proxy.here:8080"' }
+        - { line: 'export https_proxy="http://your.proxy.here:8080"' }
 
     - name: Install packages
       apt:
