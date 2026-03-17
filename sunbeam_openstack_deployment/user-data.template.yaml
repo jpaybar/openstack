@@ -1,0 +1,143 @@
+#cloud-config
+
+# Actualización del sistema
+package_update: true
+package_upgrade: true
+# Reinicia automáticamente si el Kernel se actualiza 
+package_reboot_if_required: true
+
+# Evitar preguntas interactivas al instalar iptables-persistent
+bootcmd:
+  - echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+  - echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+
+# Configuración de usuario con privilegios sudo sin contraseña
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [sudo, adm]
+    shell: /bin/bash
+    lock_passwd: false
+    password: ubuntu
+    ssh_authorized_keys:
+      - __SSH_KEY__
+
+# Configuración de usuario y contraseña
+chpasswd:
+  list: |
+    ubuntu:ubuntu
+  expire: False
+
+# Permitir login por SSH con contraseña
+ssh_pwauth: True
+
+# Paquetes esenciales para red y virtualización
+packages:
+  - qemu-guest-agent
+  - cloud-utils
+  - bridge-utils
+  - net-tools
+  - iptables-persistent
+
+write_files:
+
+  # Configuración de red
+  - path: /etc/netplan/01-netcfg.yaml
+    permissions: '0600'
+    content: |
+      network:
+        version: 2
+        ethernets:
+          enp1s0:
+            dhcp4: no
+            addresses:
+              - 192.168.122.250/24
+            routes:
+              - to: default
+                via: 192.168.122.1
+            nameservers:
+              addresses: [8.8.8.8, 1.1.1.1]
+          enp2s0:
+            dhcp4: no
+            addresses: []
+            accept-ra: no
+            link-local: []
+
+  # Script que espera a que exista br-ex
+  - path: /usr/local/bin/configurar-br-ex.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+
+      echo "Esperando a que aparezca br-ex..."
+
+      while ! ip link show br-ex >/dev/null 2>&1; do
+          sleep 2
+      done
+
+      echo "br-ex detectado, configurando IP"
+
+      ip link set br-ex up
+      ip addr replace 172.20.0.1/24 dev br-ex
+
+      logger "br-ex configurado automáticamente por cloud-init"
+
+  # Servicio systemd
+  - path: /etc/systemd/system/br-ex-config.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Configurar IP de br-ex cuando exista
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/local/bin/configurar-br-ex.sh
+      Restart=always
+      RestartSec=5
+
+      [Install]
+      WantedBy=multi-user.target
+ 
+  # Hosts
+  - path: /etc/hosts
+    content: |
+      127.0.0.1 localhost
+      192.168.122.250 ubuntu 
+
+      # IPv6
+      ::1 localhost ip6-localhost ip6-loopback
+      ff02::1 ip6-allnodes
+      ff02::2 ip6-allrouters
+    overwrite: true
+
+# Automatización de tareas post-arranque
+runcmd:
+  # 1. Redimensionar particiones
+  - [ growpart, /dev/vda, 1 ]
+  - [ resize2fs, /dev/vda1 ]
+
+  # 2. Saneamiento de red
+  - rm -f /etc/netplan/50-cloud-init.yaml
+  - ip addr flush dev enp1s0
+  - ip addr flush dev enp2s0
+  - [ netplan, apply ]
+
+  # 3. Servicios
+  - [ systemctl, enable, --now, qemu-guest-agent ]
+
+  # 4. Activar servicio br-ex
+  - systemctl daemon-reload
+  - systemctl enable --now br-ex-config.service
+
+  # 5. Configurar NAT para OpenStack
+  - |
+    NETWORK="172.20.0.0/24"
+    INTERFACE="enp1s0"
+
+    iptables -t nat -C POSTROUTING -s "$NETWORK" -o "$INTERFACE" -j MASQUERADE 2>/dev/null || \
+    iptables -t nat -A POSTROUTING -s "$NETWORK" -o "$INTERFACE" -j MASQUERADE
+
+    mkdir -p /etc/iptables
+    iptables-save > /etc/iptables/rules.v4
