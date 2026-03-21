@@ -1,0 +1,88 @@
+heat_template_version: 2016-04-08
+
+description: >
+  Topología: external-network <-> router1 <-> net1 <-> router2 <-> net2 <-> router3 <-> net3
+  Fase 1 - Infraestructura base con security groups por capas.
+  server1: Nginx reverse proxy (net1 + floating IP)
+  server2: Apache + PHP (net2)
+  server3: MySQL (net3)
+
+parameters:
+  image:
+    type: string
+    description: Imagen a usar para las VMs
+    default: ubuntu
+  flavor:
+    type: string
+    description: Flavor de las VMs
+    default: m1.tiny
+  key_name:
+    type: string
+    description: Nombre del keypair a usar
+    default: my_host_key
+
+resources:
+
+  networks:
+    type: OS::Heat::Stack
+    properties:
+      template: { get_file: templates/00-networks.yaml }
+
+  routers:
+    type: OS::Heat::Stack
+    depends_on: networks
+    properties:
+      template: { get_file: templates/01-routers.yaml }
+      parameters:
+        net1_id: { get_attr: [networks, outputs, net1_id] }
+        net2_id: { get_attr: [networks, outputs, net2_id] }
+        net3_id: { get_attr: [networks, outputs, net3_id] }
+        subnet1_id: { get_attr: [networks, outputs, subnet1_id] }
+        subnet2_id: { get_attr: [networks, outputs, subnet2_id] }
+        subnet3_id: { get_attr: [networks, outputs, subnet3_id] }
+
+  security_groups:
+    type: OS::Heat::Stack
+    properties:
+      template: { get_file: templates/02-security-groups.yaml }
+
+  servers:
+    type: OS::Heat::Stack
+    depends_on: [routers, security_groups]
+    properties:
+      template: { get_file: templates/03-servers.yaml }
+      parameters:
+        image: { get_param: image }
+        flavor: { get_param: flavor }
+        key_name: { get_param: key_name }
+        net1_id: { get_attr: [networks, outputs, net1_id] }
+        net2_id: { get_attr: [networks, outputs, net2_id] }
+        net3_id: { get_attr: [networks, outputs, net3_id] }
+        sg_server1_id: { get_attr: [security_groups, outputs, sg_server1_id] }
+        sg_server2_id: { get_attr: [security_groups, outputs, sg_server2_id] }
+        sg_server3_id: { get_attr: [security_groups, outputs, sg_server3_id] }
+
+  floating_ips:
+    type: OS::Heat::Stack
+    depends_on: servers
+    properties:
+      template: { get_file: templates/04-floating-ips.yaml }
+      parameters:
+        server1_port_id: { get_attr: [servers, outputs, server1_port_id] }
+
+outputs:
+  server1_floating_ip:
+    description: Floating IP de server1 (Nginx)
+    value: { get_attr: [floating_ips, outputs, server1_floating_ip] }
+
+  server1_ip:
+    description: IP fija de server1 (net1)
+    value: { get_attr: [servers, outputs, server1_ip] }
+
+  server2_ip:
+    description: IP fija de server2 (net2)
+    value: { get_attr: [servers, outputs, server2_ip] }
+
+  server3_ip:
+    description: IP fija de server3 (net3)
+    value: { get_attr: [servers, outputs, server3_ip] }

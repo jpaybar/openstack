@@ -1,0 +1,30 @@
+heat_template_version: 2016-10-14
+
+description: >
+  Security Group básico para pruebas (ICMP + SSH)
+
+resources:
+
+  sec_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: sec_group
+      description: Permite ping (ICMP) y SSH (TCP 22)
+      rules:
+        - protocol: icmp
+          direction: ingress
+
+        - protocol: tcp
+          direction: ingress
+          port_range_min: 22
+          port_range_max: 22
+
+outputs:
+
+  security_group_id:
+    description: ID del Security Group creado
+    value: { get_resource: sec_group }
+
+  security_group_name:
+    description: Nombre del Security Group
+    value: sec_group

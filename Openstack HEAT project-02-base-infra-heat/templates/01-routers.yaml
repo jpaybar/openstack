@@ -1,0 +1,128 @@
+heat_template_version: 2016-04-08
+
+description: Crea los 3 routers, sus interfaces y las ExtraRoutes necesarias.
+
+parameters:
+  net1_id:
+    type: string
+  net2_id:
+    type: string
+  net3_id:
+    type: string
+  subnet1_id:
+    type: string
+  subnet2_id:
+    type: string
+  subnet3_id:
+    type: string
+
+resources:
+
+  # ─── ROUTERS ─────────────────────────────────────────────
+  router1:
+    type: OS::Neutron::Router
+    properties:
+      name: router1
+      external_gateway_info:
+        network: external-network
+
+  router2:
+    type: OS::Neutron::Router
+    properties:
+      name: router2
+
+  router3:
+    type: OS::Neutron::Router
+    properties:
+      name: router3
+
+  # ─── INTERFACES ──────────────────────────────────────────
+  # Router1: interfaz en subnet1
+  r1_subnet1:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router1 }
+      subnet_id: { get_param: subnet1_id }
+
+  # Router2: port con IP fija en subnet1 e interfaz en subnet2
+  router2_port_net1:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: net1_id }
+      fixed_ips:
+        - subnet_id: { get_param: subnet1_id }
+          ip_address: 192.168.1.254
+
+  r2_net1:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router2 }
+      port_id: { get_resource: router2_port_net1 }
+
+  r2_subnet2:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router2 }
+      subnet_id: { get_param: subnet2_id }
+
+  # Router3: port con IP fija en subnet2 e interfaz en subnet3
+  router3_port_net2:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: net2_id }
+      fixed_ips:
+        - subnet_id: { get_param: subnet2_id }
+          ip_address: 192.168.2.254
+
+  r3_net2:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router3 }
+      port_id: { get_resource: router3_port_net2 }
+
+  r3_subnet3:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router3 }
+      subnet_id: { get_param: subnet3_id }
+
+  # ─── EXTRA ROUTES ────────────────────────────────────────
+  router1_route_to_net2:
+    type: OS::Neutron::ExtraRoute
+    depends_on: [r1_subnet1, r2_net1]
+    properties:
+      router_id: { get_resource: router1 }
+      destination: 192.168.2.0/24
+      nexthop: 192.168.1.254
+
+  router1_route_to_net3:
+    type: OS::Neutron::ExtraRoute
+    depends_on: [r1_subnet1, r2_net1]
+    properties:
+      router_id: { get_resource: router1 }
+      destination: 192.168.3.0/24
+      nexthop: 192.168.1.254
+
+  router2_route_to_net3:
+    type: OS::Neutron::ExtraRoute
+    depends_on: [r2_subnet2, r3_net2]
+    properties:
+      router_id: { get_resource: router2 }
+      destination: 192.168.3.0/24
+      nexthop: 192.168.2.254
+
+  router3_route_to_net1:
+    type: OS::Neutron::ExtraRoute
+    depends_on: [r3_net2, r3_subnet3]
+    properties:
+      router_id: { get_resource: router3 }
+      destination: 192.168.1.0/24
+      nexthop: 192.168.2.1
+
+  router3_route_to_net2:
+    type: OS::Neutron::ExtraRoute
+    depends_on: [r3_net2, r3_subnet3]
+    properties:
+      router_id: { get_resource: router3 }
+      destination: 192.168.2.0/24
+      nexthop: 192.168.2.1

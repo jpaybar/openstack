@@ -1,0 +1,14 @@
+openstack stack list
+
+openstack stack delete base-infra-stack
+
+openstack stack list
+
+openstack stack create \
+  -t main.yaml \
+  --parameter public_key="$(cat ~/.ssh/id_rsa.pub)" \
+  base-infra-stack
+  
+openstack stack show base-infra-stack
+
+ssh -i ~/.ssh/id_rsa ubuntu@172.20.0.59 (IP FLOTANTE)

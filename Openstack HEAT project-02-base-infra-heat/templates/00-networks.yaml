@@ -1,0 +1,70 @@
+heat_template_version: 2016-04-08
+
+description: Crea las 3 redes y subnets del proyecto.
+
+resources:
+
+  net1:
+    type: OS::Neutron::Net
+    properties:
+      name: net1
+
+  net2:
+    type: OS::Neutron::Net
+    properties:
+      name: net2
+
+  net3:
+    type: OS::Neutron::Net
+    properties:
+      name: net3
+
+  subnet1:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: net1 }
+      cidr: 192.168.1.0/24
+      dns_nameservers: [8.8.8.8]
+      host_routes:
+        - destination: 192.168.2.0/24
+          nexthop: 192.168.1.254
+        - destination: 192.168.3.0/24
+          nexthop: 192.168.1.254
+
+  subnet2:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: net2 }
+      cidr: 192.168.2.0/24
+      dns_nameservers: [8.8.8.8]
+      host_routes:
+        - destination: 192.168.1.0/24
+          nexthop: 192.168.2.1
+        - destination: 192.168.3.0/24
+          nexthop: 192.168.2.254
+
+  subnet3:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: net3 }
+      cidr: 192.168.3.0/24
+      dns_nameservers: [8.8.8.8]
+      host_routes:
+        - destination: 192.168.1.0/24
+          nexthop: 192.168.3.1
+        - destination: 192.168.2.0/24
+          nexthop: 192.168.3.1
+
+outputs:
+  net1_id:
+    value: { get_resource: net1 }
+  net2_id:
+    value: { get_resource: net2 }
+  net3_id:
+    value: { get_resource: net3 }
+  subnet1_id:
+    value: { get_resource: subnet1 }
+  subnet2_id:
+    value: { get_resource: subnet2 }
+  subnet3_id:
+    value: { get_resource: subnet3 }

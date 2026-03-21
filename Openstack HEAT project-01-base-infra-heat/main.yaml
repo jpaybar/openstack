@@ -1,0 +1,45 @@
+heat_template_version: 2016-10-14
+
+description: Stack principal - despliegue completo
+
+parameters:
+
+  public_key:
+    type: string
+    description: Clave publica SSH
+
+resources:
+
+  keypair_stack:
+    type: OS::Heat::Stack
+    properties:
+      template: { get_file: templates/00-keypair.yaml }
+      parameters:
+        public_key: { get_param: public_key }
+
+  security_group_stack:
+    type: OS::Heat::Stack
+    properties:
+      template: { get_file: templates/01-security-group.yaml }
+
+  instance_stack:
+    type: OS::Heat::Stack
+    depends_on:
+      - keypair_stack
+      - security_group_stack
+    properties:
+      template: { get_file: templates/02-instance.yaml }
+
+  floating_ip_stack:
+    type: OS::Heat::Stack
+    depends_on: instance_stack
+    properties:
+      template: { get_file: templates/03-floating-ip.yaml }
+      parameters:
+        port_id: { get_attr: [instance_stack, outputs, instance_port_id] }
+
+outputs:
+
+  floating_ip:
+    description: IP publica de la instancia
+    value: { get_attr: [floating_ip_stack, outputs, floating_ip_address] }

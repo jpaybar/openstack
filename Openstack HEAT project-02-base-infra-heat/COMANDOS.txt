@@ -1,0 +1,66 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@	Modelo clásico 3 capas separadas     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Usuario  server1 (Nginx reverse proxy) 
+         server2 (Apache + PHP) 
+         server3 (MySQL)
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+0. Lanzar el stack y ver que se crea correctamente:
+####################################################
+openstack stack list
+
+openstack stack delete test-stack --wait
+
+openstack stack list
+
+openstack stack create -t test_claude.yaml test-stack
+  
+openstack stack show test-stack
+openstack stack show test-stack | grep -i status
+
+openstack stack update -t test_claude.yaml test-stack
+
+1. Verificación visual en Horizon:
+###################################
+
+2. Verificación desde CLI antes de entrar a las VMs:
+#####################################################
+# Ver las IPs asignadas a cada servidor
+openstack stack output show test-stack --all
+
+# Confirmar que la floating IP está asociada a server1
+openstack floating ip list
+
+# Ver las rutas de cada router
+openstack router show router1 | grep routes
+openstack router show router2 | grep routes
+
+3. Pruebas de conectividad entrando a server1 (el único accesible desde fuera):
+################################################################################
+Permission denied al hacer SSH a server2
+Esto es normal  la clave privada no está en server1.
+Saltar manualmente pero pasando el agente en cada salto:
+
+# Desde HOST a server1
+ssh -A -i ~/.ssh/my_host_key ubuntu@<floating_ip_server1>
+
+# Desde server1 a server2, también con -A
+ssh -A ubuntu@192.168.2.X
+
+# Desde server2 a server3
+ssh -A ubuntu@192.168.3.X
+
+# Desde server1, ping a server2 (net2)
+ping -c 4 192.168.2.X
+
+# Desde server1, ping a server3 (net3)
+ping -c 4 192.168.3.X
+
+
+4. Prueba de salida a internet desde cada servidor:
+####################################################
+# Desde cada servidor
+ping -c 4 8.8.8.8
+curl -s ifconfig.me

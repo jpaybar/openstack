@@ -1,0 +1,67 @@
+heat_template_version: 2016-04-08
+
+description: Crea los security groups por capas para cada servidor.
+
+resources:
+
+  # SG server1: SSH, ICMP y HTTP desde cualquier IP
+  sg_server1:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: sg_server1
+      description: Reverse proxy - SSH, ICMP y HTTP publico
+      rules:
+        - protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+          remote_ip_prefix: 0.0.0.0/0
+        - protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+          remote_ip_prefix: 0.0.0.0/0
+        - protocol: icmp
+          remote_ip_prefix: 0.0.0.0/0
+
+  # SG server2: SSH, ICMP y HTTP solo desde net1
+  sg_server2:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: sg_server2
+      description: App server - SSH e HTTP solo desde net1
+      rules:
+        - protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+          remote_ip_prefix: 192.168.1.0/24
+        - protocol: tcp
+          port_range_min: 80
+          port_range_max: 80
+          remote_ip_prefix: 192.168.1.0/24
+        - protocol: icmp
+          remote_ip_prefix: 192.168.1.0/24
+
+  # SG server3: SSH, ICMP y MySQL solo desde net2
+  sg_server3:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: sg_server3
+      description: DB server - SSH y MySQL solo desde net2
+      rules:
+        - protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+          remote_ip_prefix: 192.168.2.0/24
+        - protocol: tcp
+          port_range_min: 3306
+          port_range_max: 3306
+          remote_ip_prefix: 192.168.2.0/24
+        - protocol: icmp
+          remote_ip_prefix: 192.168.2.0/24
+
+outputs:
+  sg_server1_id:
+    value: { get_resource: sg_server1 }
+  sg_server2_id:
+    value: { get_resource: sg_server2 }
+  sg_server3_id:
+    value: { get_resource: sg_server3 }

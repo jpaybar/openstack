@@ -1,0 +1,23 @@
+heat_template_version: 2016-10-14
+
+description: Instancia basica
+
+resources:
+
+  my_instance:
+    type: OS::Nova::Server
+    properties:
+      name: test-vm
+      image: ubuntu
+      flavor: m1.tiny
+      key_name: mykey
+      networks:
+        - network: demo-network
+      security_groups:
+        - sec_group
+
+outputs:
+
+  instance_port_id:
+    description: Port ID de la instancia
+    value: { get_attr: [my_instance, addresses, demo-network, 0, port] }

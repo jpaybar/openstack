@@ -1,0 +1,25 @@
+heat_template_version: 2016-04-08
+
+description: Crea y asocia la floating IP a server1.
+
+parameters:
+  server1_port_id:
+    type: string
+
+resources:
+
+  fip_server1:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: external-network
+
+  fip_assoc_server1:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: fip_server1 }
+      port_id: { get_param: server1_port_id }
+
+outputs:
+  server1_floating_ip:
+    description: Floating IP de server1 (Nginx)
+    value: { get_attr: [fip_server1, floating_ip_address] }

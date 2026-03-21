@@ -1,0 +1,88 @@
+heat_template_version: 2016-04-08
+
+description: Crea los ports explícitos y las 3 VMs.
+
+parameters:
+  image:
+    type: string
+  flavor:
+    type: string
+  key_name:
+    type: string
+  net1_id:
+    type: string
+  net2_id:
+    type: string
+  net3_id:
+    type: string
+  sg_server1_id:
+    type: string
+  sg_server2_id:
+    type: string
+  sg_server3_id:
+    type: string
+
+resources:
+
+  # ─── PORTS ───────────────────────────────────────────────
+  server1_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: net1_id }
+      security_groups:
+        - { get_param: sg_server1_id }
+
+  server2_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: net2_id }
+      security_groups:
+        - { get_param: sg_server2_id }
+
+  server3_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: net3_id }
+      security_groups:
+        - { get_param: sg_server3_id }
+
+  # ─── VMs ─────────────────────────────────────────────────
+  server1:
+    type: OS::Nova::Server
+    properties:
+      name: server1
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      networks:
+        - port: { get_resource: server1_port }
+
+  server2:
+    type: OS::Nova::Server
+    properties:
+      name: server2
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      networks:
+        - port: { get_resource: server2_port }
+
+  server3:
+    type: OS::Nova::Server
+    properties:
+      name: server3
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      networks:
+        - port: { get_resource: server3_port }
+
+outputs:
+  server1_port_id:
+    value: { get_resource: server1_port }
+  server1_ip:
+    value: { get_attr: [server1, first_address] }
+  server2_ip:
+    value: { get_attr: [server2, first_address] }
+  server3_ip:
+    value: { get_attr: [server3, first_address] }
