@@ -2,6 +2,16 @@
 # prep-openstack-env.sh
 # Preparacion del entorno OpenStack tras restaurar snapshot KVM
 
+# ─── Verificar que se ejecuta con source ────────────────
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  echo ""
+  echo "Este script debe ejecutarse con source para aplicar las variables de entorno:"
+  echo ""
+  echo "      source ./$(basename "$0")"
+  echo ""
+  exit 1
+fi
+
 set -e
 
 # ─── Colores ────────────────────────────────────────────
@@ -27,6 +37,10 @@ INTERFACE="public"
 
 # ─── Activar cloud ──────────────────────────────────────
 export OS_CLOUD=openstack
+
+if ! grep -q 'export OS_CLOUD=openstack' ~/.bashrc; then
+  echo 'export OS_CLOUD=openstack' >> ~/.bashrc
+fi
 
 # ─── Clouds.yaml ────────────────────────────────────────
 if [ ! -f "$CLOUDS_YAML" ]; then
